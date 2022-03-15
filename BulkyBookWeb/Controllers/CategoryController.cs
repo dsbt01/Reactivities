@@ -19,5 +19,12 @@ namespace BulkyBookWeb.Controllers
 
             return View(objCategory);
         }
+
+        //Get
+        public IActionResult Create()
+        {
+
+            return View();
+        }
     }
 }
