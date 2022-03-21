@@ -45,7 +45,7 @@ namespace BulkyBook.DataAccess.Repository
 
         public void Remove(T entity)
         {
-            dbSet.Remove(T);
+            dbSet.Remove(entity);
         }
 
         public void RemoveRange(IEnumerable<T> entities)
