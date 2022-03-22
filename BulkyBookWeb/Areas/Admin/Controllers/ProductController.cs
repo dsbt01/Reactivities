@@ -23,9 +23,7 @@ namespace BulkyBookWeb.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> objUnitOfWork = _unitOfWork.Product.GetAll().OrderBy(r => r.Title);
-
-            return View(objUnitOfWork);
+            return View();
         }
 
 
@@ -80,7 +78,7 @@ namespace BulkyBookWeb.Controllers
                     var uploads = Path.Combine(wwwRootPath, @"images\products");
                     var extension = Path.GetExtension(file.FileName);
 
-                    using (var fileStreams = new FileStream(Path.Combine(uploads,fileName + extension), FileMode.Create))
+                    using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                     {
                         file.CopyTo(fileStreams);
                     }
@@ -131,5 +129,16 @@ namespace BulkyBookWeb.Controllers
             TempData["success"] = "Product deleted successfully";
             return RedirectToAction("Index");
         }
+
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var productList = _unitOfWork.Product.GetAll();
+
+            return Json(new {data = productList});
+        }
+
+        #endregion
     }
 }
