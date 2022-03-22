@@ -45,6 +45,7 @@ namespace BulkyBooks.Models
         public string ImageUrl { get; set; }
 
         [Required]
+        [Display(Name = "Category")]
         //this creates a foreign key
         public int CategoryId { get; set; }
 
@@ -53,6 +54,7 @@ namespace BulkyBooks.Models
 
 
         [Required]
+        [Display(Name = "Cover Type")]
         //this creates a foreign key
         public int CoverTypeId { get; set; }
 

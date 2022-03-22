@@ -50,6 +50,8 @@ namespace BulkyBookWeb.Controllers
             if (id == null || id == 0)
             {
                 //create product
+                ViewBag.CategoryList = CategoryList;
+                ViewBag.CoverTypeList = CoverTypeList;
 
                 return View(product);
             }
