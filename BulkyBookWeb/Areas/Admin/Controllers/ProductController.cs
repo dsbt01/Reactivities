@@ -3,6 +3,7 @@ using BulkyBook.DataAccess.Repository.iRepository;
 using BulkyBook.Models;
 using BulkyBooks.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkyBookWeb.Controllers
 {
@@ -23,42 +24,39 @@ namespace BulkyBookWeb.Controllers
             return View(objUnitOfWork);
         }
 
-        //Get
-        public IActionResult Create()
-        {
-
-            return View();
-        }
-
-        //post
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Product obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Add(obj);
-                _unitOfWork.Save();
-
-                TempData["success"] = "Product created successfully";
-                return RedirectToAction("Index");
-            }
-            return View(obj);
-        }
 
         //Get
-        public IActionResult Edit(int? id)
+        public IActionResult Upsert(int? id)
         {
+            Product product = new();
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select
+            (
+                u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }
+            );
+
+            IEnumerable<SelectListItem> CoverTypeList = _unitOfWork.CoverType.GetAll().Select
+            (
+                u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }
+            );
+
             if (id == null || id == 0)
             {
-                return NotFound();
+                //create product
+
+                return View(product);
             }
-
-            var product = _unitOfWork.Product.GetFirstOrDefault(c => c.Id == id);
-
-            if (product == null)
+            else
             {
-                return NotFound();
+                //Update product
+
             }
 
             return View(product);
@@ -67,7 +65,7 @@ namespace BulkyBookWeb.Controllers
         //post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product obj)
+        public IActionResult Upsert(Product obj)
         {
             if (ModelState.IsValid)
             {
