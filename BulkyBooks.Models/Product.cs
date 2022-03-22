@@ -33,14 +33,17 @@ namespace BulkyBooks.Models
 
         [Required]
         [Range(1, 10000)]
+        [Display(Name = "Price for 1-50")]
         public double Price { get; set; }
 
         [Required]
         [Range(1, 10000)]
+        [Display(Name = "Price for 51-100")]
         public double Price50 { get; set; }
 
         [Required]
         [Range(1, 10000)]
+        [Display(Name = "Price for 101+")]
         public double Price100 { get; set; }
 
         [ValidateNever]
