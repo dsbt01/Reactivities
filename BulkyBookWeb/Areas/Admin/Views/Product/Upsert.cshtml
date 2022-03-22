@@ -56,7 +56,7 @@
 
 		<div class="mb-3">
 			<label asp-for="Product.CategoryId"></label>
-			<select asp-for="Product.CategoryId" asp-items="ViewBag.CategoryList" class="form-select">
+			<select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select">
 				<option disabled selected>--Select Category--</option>
 			</select>
 			<span asp-validation-for="Product.CategoryId" class="text-danger"></span>
@@ -64,7 +64,7 @@
 
 		<div class="mb-3">
 			<label asp-for="Product.CoverTypeId"></label>
-			<select asp-for="Product.CoverTypeId" asp-items="@(ViewData["CoverTypeList"] as IEnumerable<SelectListItem>)" class="form-select">
+			<select asp-for="Product.CoverTypeId" asp-items="@Model.CoverTypeList" class="form-select">
 				<option disabled selected>--Select Cover Type--</option>
 			</select>
 			<span asp-validation-for="Product.CoverTypeId" class="text-danger"></span>
