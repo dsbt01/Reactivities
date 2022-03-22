@@ -23,7 +23,7 @@ function loadDataTable() {
                     return `
                         <div class="w-75 btn-group" role="group">
                             <a href="/Admin/Product/Upsert?id=${data}" class="btn btn-primary mx-2"><i class="bi bi-pencil-square"></i>Edit</a>
-                            <a class="btn btn-danger mx-2"><i class="bi bi-trash3-fill"></i>Delete</a>
+                            <a onClick=Delete('/Admin/Product/Delete/${data}') class="btn btn-danger mx-2"><i class="bi bi-trash3-fill"></i>Delete</a>
                         </div>
                     `
                 }
@@ -43,12 +43,12 @@ function Delete(url) {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            $ajax({
+            $.ajax({
                 url: url,
                 type: 'DELETE',
                 success: function (data) {
                     if (data.success) {
-                        data.ajax.reload();
+                        dataTable.ajax.reload();
                         toastr.success(data.message);
 
                     }
