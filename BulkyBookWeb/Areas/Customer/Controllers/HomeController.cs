@@ -31,7 +31,7 @@ namespace BulkyBookWeb.Controllers
 
         public IActionResult Details(int id)
         {
-            ShoppingCard cartObj = new()
+            ShoppingCart cartObj = new()
             {
                 Count = 1,
                 Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id, includeProperties: "Category,CoverType")

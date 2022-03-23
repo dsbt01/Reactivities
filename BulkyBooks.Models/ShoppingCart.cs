@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BulkyBooks.Models.ViewModels
+namespace BulkyBooks.Models
 {
-    public class ShoppingCard
+    public class ShoppingCart
     {
         public Product Product { get; set; }
 
