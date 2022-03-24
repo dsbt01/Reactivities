@@ -5,6 +5,8 @@ using BulkyBooks.Models;
 using BulkyBooks.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace BulkyBookWeb.Controllers
 {
@@ -12,10 +14,12 @@ namespace BulkyBookWeb.Controllers
     public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ApplicationDbContext _db;
 
-        public CompanyController(IUnitOfWork UnitOfWork)
+        public CompanyController(IUnitOfWork UnitOfWork, ApplicationDbContext Db)
         {
             _unitOfWork = UnitOfWork;
+            _db = Db;
         }
 
         public IActionResult Index()
@@ -59,18 +63,22 @@ namespace BulkyBookWeb.Controllers
                 }
 
                 _unitOfWork.Save();
-               
+
                 return RedirectToAction("Index");
             }
             return View(obj);
         }
-       
+
 
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()
         {
-            var companyList = _unitOfWork.Company.GetAll();
+            //there seems to be a bug in here
+
+            //var companyList = _unitOfWork.Company.GetAll();
+
+            var companyList = _db.Companies.ToList();
 
             return Json(new { data = companyList });
         }
