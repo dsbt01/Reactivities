@@ -14,12 +14,10 @@ namespace BulkyBookWeb.Controllers
     public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ApplicationDbContext _db;
 
-        public CompanyController(IUnitOfWork UnitOfWork, ApplicationDbContext Db)
+        public CompanyController(IUnitOfWork UnitOfWork)
         {
             _unitOfWork = UnitOfWork;
-            _db = Db;
         }
 
         public IActionResult Index()
@@ -76,9 +74,7 @@ namespace BulkyBookWeb.Controllers
         {
             //there seems to be a bug in here
 
-            //var companyList = _unitOfWork.Company.GetAll();
-
-            var companyList = _db.Companies.ToList();
+            var companyList = _unitOfWork.Company.GetAll();
 
             return Json(new { data = companyList });
         }
