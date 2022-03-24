@@ -20,6 +20,6 @@ namespace BulkyBook.DataAccess
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
-        public DbSet<Company> Company { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }

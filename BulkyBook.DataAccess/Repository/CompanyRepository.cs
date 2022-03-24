@@ -22,7 +22,7 @@ namespace BulkyBook.DataAccess.Repository
 
         public void Update(Company company)
         {
-            _db.Company.Update(company);
+            _db.Companies.Update(company);
         }
     }
 }
