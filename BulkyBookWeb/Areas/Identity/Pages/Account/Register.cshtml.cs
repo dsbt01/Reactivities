@@ -144,7 +144,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
 
             Input = new InputModel()
             {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                RoleList = _roleManager.Roles.OrderBy(r => r.Name).Select(x => x.Name).Select(i => new SelectListItem
                 {
                     Text = i,
                     Value = i
