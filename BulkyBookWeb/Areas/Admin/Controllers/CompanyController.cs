@@ -52,12 +52,12 @@ namespace BulkyBookWeb.Controllers
                 if (obj.Id == 0)
                 {
                     _unitOfWork.Company.Add(obj);
-                    TempData["success"] = "Product Created successfully";
+                    TempData["success"] = "Company Created successfully";
                 }
                 else
                 {
                     _unitOfWork.Company.Update(obj);
-                    TempData["success"] = "Product Updated successfully";
+                    TempData["success"] = "Company Updated successfully";
                 }
 
                 _unitOfWork.Save();
