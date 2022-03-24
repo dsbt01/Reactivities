@@ -41,13 +41,13 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
-            _roleManager = roleManager;
+            _emailSender = emailSender;            
         }
 
         /// <summary>
