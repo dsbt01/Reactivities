@@ -119,19 +119,19 @@ namespace BulkyBookWeb.Controllers
         //post
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST(int? id)
-        {
-            var obj = _unitOfWork.Product.GetFirstOrDefault(c => c.Id == id);
-            if (obj == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.Product.Remove(obj);
-            _unitOfWork.Save();
+        //public IActionResult DeletePOST(int? id)
+        //{
+        //    var obj = _unitOfWork.Product.GetFirstOrDefault(c => c.Id == id);
+        //    if (obj == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    _unitOfWork.Product.Remove(obj);
+        //    _unitOfWork.Save();
 
-            TempData["success"] = "Product deleted successfully";
-            return RedirectToAction("Index");
-        }
+        //    TempData["success"] = "Product deleted successfully";
+        //    return RedirectToAction("Index");
+        //}
 
         #region API CALLS
         [HttpGet]
