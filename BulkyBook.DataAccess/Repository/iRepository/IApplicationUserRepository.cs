@@ -10,6 +10,6 @@ namespace BulkyBook.DataAccess.Repository.iRepository
 {
     public interface IApplicationUserRepository : IRepository<ApplicationUser>
     {
-        void Update(ApplicationUser applicationUser);
+
     }
 }
