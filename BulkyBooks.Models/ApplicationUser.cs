@@ -23,7 +23,7 @@ namespace BulkyBooks.Models
 
         public string? PostalCode { get; set; }
 
-        public string? CompanyId { get; set; }
+        public int? CompanyId { get; set; }
 
         [ForeignKey("CompanyId")]
         [ValidateNever]
