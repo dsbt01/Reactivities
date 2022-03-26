@@ -3,6 +3,7 @@ using BulkyBook.Models;
 using BulkyBooks.Models;
 using BulkyBooks.Models.ViewModels;
 using BulkyBookWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,6 +22,21 @@ namespace BulkyBookWeb.Controllers
             _unitOfWork = unitOfWork;
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public IActionResult Details(int id)
+        {
+            ShoppingCart cartObj = new()
+            {
+                Count = 1,
+                Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id, includeProperties: "Category,CoverType")
+            };
+
+            return View(cartObj);
+        }
+
 
         public IActionResult Index()
         {
