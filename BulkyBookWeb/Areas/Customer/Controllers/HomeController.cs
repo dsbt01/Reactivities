@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BulkyBookWeb.Controllers
 {
@@ -26,15 +27,20 @@ namespace BulkyBookWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public IActionResult Details(int id)
+        public IActionResult Details(ShoppingCart shoppingCart)
         {
-            ShoppingCart cartObj = new()
-            {
-                Count = 1,
-                Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id, includeProperties: "Category,CoverType")
-            };
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-            return View(cartObj);
+            shoppingCart.ApplicationUserId = claim.Value;
+
+            //to avoid issue of EF trying to create a new product
+            shoppingCart.Product = null;
+
+            _unitOfWork.ShoppingCart.Add(shoppingCart);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -45,12 +51,13 @@ namespace BulkyBookWeb.Controllers
             return View(productList);
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int productId)
         {
             ShoppingCart cartObj = new()
             {
                 Count = 1,
-                Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id, includeProperties: "Category,CoverType")
+                ProductId = productId,
+                Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == productId, includeProperties: "Category,CoverType")
             };
 
             return View(cartObj);
