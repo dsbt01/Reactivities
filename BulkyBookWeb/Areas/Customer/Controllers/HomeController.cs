@@ -34,9 +34,6 @@ namespace BulkyBookWeb.Controllers
 
             shoppingCart.ApplicationUserId = claim.Value;
 
-            //to avoid issue of EF trying to create a new product
-            shoppingCart.Product = null;
-
             _unitOfWork.ShoppingCart.Add(shoppingCart);
             _unitOfWork.Save();
 
