@@ -25,35 +25,17 @@ namespace BulkyBook.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             try
             {
                 IQueryable<T> query = dbSet;
 
-                if (includeProperties != null)
+                if (filter != null)
                 {
-                    foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        query = query.Include(item);
-                    }
+                    query = query.Where(filter); 
                 }
-
-                return query.ToList();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter, string? includeProperties = null)
-        {
-            try
-            {
-                IQueryable<T> query = dbSet;
-
-                query = query.Where(filter);
 
                 if (includeProperties != null)
                 {
