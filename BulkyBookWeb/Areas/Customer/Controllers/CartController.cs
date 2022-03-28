@@ -16,7 +16,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public ShippingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(UnitOfWork UnitOfWork)
+        public CartController(IUnitOfWork UnitOfWork)
         {
             _unitOfWork = UnitOfWork;
         }
