@@ -47,6 +47,30 @@ namespace BulkyBook.DataAccess.Repository
             }
         }
 
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        {
+            try
+            {
+                IQueryable<T> query = dbSet;
+
+                query = query.Where(filter);
+
+                if (includeProperties != null)
+                {
+                    foreach (var item in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        query = query.Include(item);
+                    }
+                }
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         //to include properties do
         //"Category,CoverType"
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
