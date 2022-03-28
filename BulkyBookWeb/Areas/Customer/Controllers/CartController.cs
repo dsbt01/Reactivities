@@ -35,8 +35,20 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public IActionResult Minus(int cartId)
         {
             var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
-            _unitOfWork.ShoppingCart.DecrementCount(cart, 1);
+
+            //if the count is 1 you need to do remove
+            if (cart.Count > 1)
+            {
+                //continue
+                _unitOfWork.ShoppingCart.DecrementCount(cart, 1);               
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.Remove(cart);
+            }
+
             _unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
 
         }
