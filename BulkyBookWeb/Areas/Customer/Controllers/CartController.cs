@@ -1,5 +1,6 @@
 ﻿using BulkyBook.DataAccess.Repository;
 using BulkyBook.DataAccess.Repository.iRepository;
+using BulkyBook.Utility;
 using BulkyBooks.Models;
 using BulkyBooks.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -126,8 +127,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value, includeProperties: "Product");
 
-            //ShoppingCartVM.OrderHeader.PaymentStatus = 
-
+            ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+            ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+            ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+            ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
 
             foreach (var cart in ShoppingCartVM.ListCart)
             {
@@ -135,10 +138,28 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
 
+            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
+            _unitOfWork.Save();
 
-            //return View(ShoppingCartVM);
+            foreach (var cart in ShoppingCartVM.ListCart)
+            {
+                OrderDetail orderDetail = new()
+                {
+                    ProductId = cart.ProductId,
+                    OrderId = ShoppingCartVM.OrderHeader.Id,
+                    Price = cart.Price,
+                    Count = cart.Count
+                };
 
-            return View();
+                _unitOfWork.OrderDetail.Add(orderDetail);
+                _unitOfWork.Save();
+            }
+
+            _unitOfWork.ShoppingCart.RemoveRange(ShoppingCartVM.ListCart);
+            _unitOfWork.Save();
+
+
+            return RedirectToAction("Index", "Home");
         }
 
 
