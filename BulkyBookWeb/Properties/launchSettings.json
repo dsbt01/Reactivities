@@ -25,6 +25,24 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sqlDebugging": true
+    },
+    "BulkyBookWebTest": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Test"
+      },
+      "sqlDebugging": true,
+      "applicationUrl": "https://localhost:7228;http://localhost:5228",
+      "dotnetRunMessages": true
+    },
+    "IIS Express Test": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Test"
+      },
+      "sqlDebugging": true
     }
   }
 }

@@ -20,7 +20,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
-
 builder.Services.AddRazorPages();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
