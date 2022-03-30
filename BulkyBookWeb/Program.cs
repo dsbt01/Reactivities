@@ -19,6 +19,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Domain"));
+
 
 builder.Services.AddRazorPages();
 
