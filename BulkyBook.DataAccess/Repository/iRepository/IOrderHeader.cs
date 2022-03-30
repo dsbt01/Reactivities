@@ -13,5 +13,7 @@ namespace BulkyBook.DataAccess.Repository.iRepository
         void Update(OrderHeader orderHeader);
 
         void UpdateStatus(int id, string orderStatus, string? paymentStatus=null);
+
+        void UpdateStripedPaymentid(int id, string sessionId, string? paymentIntentId);
     }
 }

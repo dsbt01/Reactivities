@@ -197,6 +197,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             var service = new SessionService();
             Session session = service.Create(options);
 
+            ShoppingCartVM.OrderHeader.SessionId = session.Id;
+            ShoppingCartVM.OrderHeader.PaymentIntentId = session.PaymentIntentId;
+
+            _unitOfWork.OrderHeader.UpdateStripedPaymentid(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
 
@@ -211,6 +216,15 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             //return RedirectToAction("Index", "Home");
         }
 
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
+
+            //check the stripe status
+
+
+        }
 
 
         /// <summary>Gets the price based on quantity.</summary>
