@@ -5,6 +5,7 @@ using BulkyBooks.Models;
 using BulkyBooks.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Stripe.Checkout;
 using System.Security.Claims;
 
@@ -197,20 +198,44 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             var service = new SessionService();
             Session session = service.Create(options);
 
+            ShoppingCartVM.OrderHeader.SessionId = session.Id;
+            ShoppingCartVM.OrderHeader.PaymentIntentId = session.PaymentIntentId;
+
+            _unitOfWork.OrderHeader.UpdateStripedPaymentid(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
 
 
 
             //stripe code
-
-            //_unitOfWork.ShoppingCart.RemoveRange(ShoppingCartVM.ListCart);
-            //_unitOfWork.Save();
-
-
-            //return RedirectToAction("Index", "Home");
         }
 
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
+
+            //check the stripe status
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.SessionId);
+
+            if(session.PaymentStatus.ToLower() == "paid")
+            {
+                _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
+                _unitOfWork.Save();
+            }
+
+            //clear shopping cart
+
+            List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+
+            _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+            _unitOfWork.Save();
+
+            return View(id);
+
+        }
 
 
         /// <summary>Gets the price based on quantity.</summary>
