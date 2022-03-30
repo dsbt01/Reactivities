@@ -15,15 +15,17 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
 
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
 
         public double OrderTotal { get; set; }
 
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork UnitOfWork, IConfiguration Configuration)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = UnitOfWork;
+            _configuration = Configuration;
         }
 
         public IActionResult Plus(int cartId)
@@ -159,7 +161,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
 
             //stripe code
-            var domain = "https://localhost:7228/";
+            var domain = _configuration.GetSection("Domain:DomainValue").Get<string>();
 
             var options = new SessionCreateOptions
             {
