@@ -171,28 +171,28 @@
 								{
 									<div class="col-3">Payment Due Date</div>
 									<div class="col-9">
-										@if(@Model.OrderHeader.PaymentDueDate.HasValue)
+										@if (@Model.OrderHeader.PaymentDueDate.HasValue)
 										{
 											<input value="@Model.OrderHeader.PaymentDueDate.Value.ToShortDateString()" readonly class="form-control" />
 										}
 										else
 										{
 											<input readonly class="form-control" />
-										}										
+										}
 									</div>
 								}
 								else
 								{
 									<div class="col-3">Payment Date</div>
 									<div class="col-9">
-										@if(@Model.OrderHeader.PaymentDate.HasValue)
+										@if (@Model.OrderHeader.PaymentDate.HasValue)
 										{
 											<input value="@Model.OrderHeader.PaymentDate.Value.ToShortDateString()" readonly class="form-control" />
 										}
 										else
 										{
-											<input  readonly class="form-control" />
-										}											
+											<input readonly class="form-control" />
+										}
 									</div>
 								}
 							</div>
@@ -212,28 +212,27 @@
 							</h4>
 							<label class="btn btn-outline-primary form-control my-2">Order Status - @Model.OrderHeader.OrderStatus</label>
 							<ul class="list-group mb-3">
-								<li class="list-group-item d-flex justify-content-between p-2">
-									@foreach (var obj in Model.OrderDetail)
-									{
+								@foreach (var obj in Model.OrderDetail)
+								{
+									<li class="list-group-item d-flex justify-content-between p-2">
 										<div class="row container">
 											<div class="col-8">
 												<h6 class="my-0 text-primary">@obj.Product.Title</h6>
-												<small class="text-muted">Price : @obj.Product.Price</small><br />
+												<small class="text-muted">Price : @obj.Price.ToString("c")</small><br />
 												<small class="text-muted">Quantity : @obj.Count</small>
 											</div>
-											<div class="col-4">
-												<p class="text-success">(@obj.Count) * (@obj.Product.Price)</p>
+											<div class="col-4 text-end">
+												<p class="text-success">@((@obj.Count * @obj.Price).ToString("c"))</p>
 											</div>
 										</div>
-									}
-								</li>
-
+									</li>
+								}
 								<li class="list-group-item bg-info">
 									<div class="row container">
 										<div class="col-6">
 											<h5 class="text-white">TOTAL </h5>
 										</div>
-										<div class="col-6 text-right">
+										<div class="col-6 text-end">
 											<h5 class="text-white">@Model.OrderHeader.OrderTotal.ToString("c")</h5>
 										</div>
 									</div>
