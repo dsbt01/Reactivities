@@ -43,7 +43,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateOrderDetails()
         {
-            var orderHEaderFromDb = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id);
+            var orderHEaderFromDb = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
             orderHEaderFromDb.Name = OrderVM.OrderHeader.Name;
             orderHEaderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
             orderHEaderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
@@ -61,7 +61,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _unitOfWork.OrderHeader.Update(orderHEaderFromDb);
             _unitOfWork.Save();
 
-            return RedirectToAction("Details", "Order", new { id = orderHEaderFromDb.Id });
+            return RedirectToAction("Details", "Order", new { orderId = orderHEaderFromDb.Id });
         }
 
 
