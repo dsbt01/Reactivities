@@ -25,7 +25,6 @@ namespace BulkyBookWeb.Controllers
         //Get
         public IActionResult Create()
         {
-
             return View();
         }
 
