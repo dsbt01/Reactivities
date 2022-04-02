@@ -59,6 +59,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 orderHEaderFromDb.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
             }
             _unitOfWork.OrderHeader.Update(orderHEaderFromDb);
+            TempData["Success"] = "Order Detail Updated Successfully.";
             _unitOfWork.Save();
 
             return RedirectToAction("Details", "Order", new { orderId = orderHEaderFromDb.Id });
