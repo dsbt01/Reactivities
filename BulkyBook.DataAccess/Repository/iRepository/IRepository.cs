@@ -14,7 +14,7 @@ namespace BulkyBook.DataAccess.Repository.iRepository
 
         void Add(T entity);
 
-        T GetFirstOrDefault(Expression<Func<T,bool>> filter, string? includeProperties = null);
+        T GetFirstOrDefault(Expression<Func<T,bool>> filter, string? includeProperties = null, bool tracked = true);
 
         void Remove(T entity);
 
