@@ -39,6 +39,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return View(OrderVM);
         }
 
+        public IActionResult UpdateOrderDetails()
+        {
+            
+
+            return View(OrderVM);
+        }
+
+
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll(string status)
