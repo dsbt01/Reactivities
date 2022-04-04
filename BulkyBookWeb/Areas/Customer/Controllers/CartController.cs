@@ -236,7 +236,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         {
             OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
 
-            if (orderHeader.PaymentIntentStatus != SD.PaymentStatusDelayedPayment)
+            if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
             {
                 //check the stripe status
                 var service = new SessionService();
