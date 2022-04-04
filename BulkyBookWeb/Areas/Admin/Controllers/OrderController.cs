@@ -5,6 +5,7 @@ using BulkyBooks.Models;
 using BulkyBooks.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -95,6 +96,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             orderHeader.OrderStatus = SD.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
 
+            if(orderHeader.PaymentIntentStatus==SD.PaymentStatusDelayedPayment)
+            {
+                orderHeader.PaymentDueDate = System.DateTime.Now.AddDays(30);
+            }
+
             _unitOfWork.OrderHeader.Update(orderHeader);
             _unitOfWork.Save();
 
@@ -110,15 +116,28 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult CancelOrder()
         {
             var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
-            orderHeader.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
-            orderHeader.Carrier = OrderVM.OrderHeader.Carrier;
-            orderHeader.OrderStatus = SD.StatusShipped;
-            orderHeader.ShippingDate = DateTime.Now;
+            
+            if (orderHeader.PaymentStatus == SD.PaymentStatusApproved)
+            {
+                //refund using stripped
+                var options = new RefundCreateOptions
+                {
+                    Reason = RefundReasons.RequestedByCustomer,
+                    PaymentIntent = orderHeader.PaymentIntentId
+                };
 
-            _unitOfWork.OrderHeader.Update(orderHeader);
+                var service = new RefundService();
+                Refund refund = service.Create(options);
+
+                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusCancelled, SD.StatusRefunded);
+            }
+            else
+            {
+                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusCancelled, SD.StatusCancelled);
+            }
             _unitOfWork.Save();
 
-            TempData["Success"] = "Order Shipped Successfully.";
+            TempData["Success"] = "Order Cancelled Successfully.";
 
             return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
         }
