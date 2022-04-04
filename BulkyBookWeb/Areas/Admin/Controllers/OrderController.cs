@@ -46,6 +46,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 		/// </returns>
 		[HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult UpdateOrderDetails()
         {
             var orderHEaderFromDb = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
@@ -72,6 +73,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult StartProccessing()
         {
             _unitOfWork.OrderHeader.UpdateStatus(OrderVM.OrderHeader.Id, SD.StatusInProcess);
@@ -84,6 +86,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult ShipOrder()
         {
             var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
@@ -100,8 +103,10 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult CancelOrder()
         {
             var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
@@ -117,6 +122,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             return RedirectToAction("Details", "Order", new { orderId = OrderVM.OrderHeader.Id });
         }
+
+
 
 
         #region API CALLS
