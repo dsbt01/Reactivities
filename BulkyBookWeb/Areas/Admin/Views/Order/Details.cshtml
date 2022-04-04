@@ -250,7 +250,7 @@
 									<input onclick="return validateInput()"
 									asp-action="ShipOrder" type="submit" class="btn btn-primary form-control my-1" value="Ship Order" />
 								}
-								if(@Model.OrderHeader.OrderStatus == SD.PaymentStatusDelayedPayment && Model.OrderHeader.OrderStatus == SD.StatusShipped)
+								if(@Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment && Model.OrderHeader.OrderStatus == SD.StatusShipped)
 								{
 									<input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
 								}
