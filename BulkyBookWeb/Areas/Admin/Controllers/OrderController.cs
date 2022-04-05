@@ -6,6 +6,7 @@ using BulkyBooks.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using Stripe.Checkout;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -16,13 +17,15 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     public class OrderController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IConfiguration _configuration;
 
         [BindProperty]
         public OrderVM OrderVM { get; set; }
 
-        public OrderController(IUnitOfWork unitOfWork)
+        public OrderController(IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -41,11 +44,65 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return View(OrderVM);
         }
 
-		/// <summary>Updates the order details.</summary>
-		/// <returns>
-		///   <br />
-		/// </returns>
-		[HttpPost]
+        [ActionName("Details")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Details_PAY_NOW()
+        {
+            OrderVM.OrderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
+            OrderVM.OrderDetail = _unitOfWork.OrderDetail.GetAll(u => u.OrderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
+
+            var domain = _configuration.GetSection("Domain:DomainValue").Get<string>();
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string>
+                {
+                    "card",
+                },
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                SuccessUrl = domain + $"admin/order/PaymentConfirmation?OrderHeaderid={OrderVM.OrderHeader.Id}",
+                CancelUrl = domain + $"admin/order/details?orderId={OrderVM.OrderHeader.Id}",
+            };
+
+            foreach (var item in OrderVM.OrderDetail)
+            {
+                SessionLineItemOptions nr = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100), //this needs to be containing the cents 20.00 => 2000
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Title,
+                        },
+                    },
+                    Quantity = item.Count,
+                };
+
+                options.LineItems.Add(nr);
+            }
+
+            var service = new SessionService();
+            Session session = service.Create(options);
+
+            OrderVM.OrderHeader.SessionId = session.Id;
+            OrderVM.OrderHeader.PaymentIntentId = session.PaymentIntentId;
+
+            _unitOfWork.OrderHeader.UpdateStripedPaymentid(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+
+        }
+
+        /// <summary>Updates the order details.</summary>
+        /// <returns>
+        ///   <br />
+        /// </returns>
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult UpdateOrderDetails()
@@ -96,7 +153,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             orderHeader.OrderStatus = SD.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
 
-            if(orderHeader.PaymentIntentStatus==SD.PaymentStatusDelayedPayment)
+            if (orderHeader.PaymentIntentStatus == SD.PaymentStatusDelayedPayment)
             {
                 orderHeader.PaymentDueDate = System.DateTime.Now.AddDays(30);
             }
@@ -116,7 +173,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult CancelOrder()
         {
             var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
-            
+
             if (orderHeader.PaymentStatus == SD.PaymentStatusApproved)
             {
                 //refund using stripped
