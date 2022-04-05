@@ -22,7 +22,7 @@ namespace BulkyBook.Utility
             //send email
             using (var emailClient = new SmtpClient())
 			{
-                emailClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.Auto);
+                emailClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTlsWhenAvailable);
                 emailClient.Authenticate("das22863@gmail.com", "edaefqsggxpkmczv");
                 await emailClient.SendAsync(emailToSend);
                 emailClient.Disconnect(true);
