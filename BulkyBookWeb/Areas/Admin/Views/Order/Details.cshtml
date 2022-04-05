@@ -254,7 +254,7 @@
 								}
 								if (@Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment && Model.OrderHeader.OrderStatus == SD.StatusShipped)
 								{
-									<input asp-action="Details_PAY_NOW" type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
+									<input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
 								}
 								if (@Model.OrderHeader.OrderStatus != SD.StatusRefunded && @Model.OrderHeader.OrderStatus != SD.StatusCancelled)
 								{
