@@ -62,7 +62,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 },
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = domain + $"admin/order/PaymentConfirmation?OrderHeaderid={OrderVM.OrderHeader.Id}",
+                SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderHeaderid={OrderVM.OrderHeader.Id}",
                 CancelUrl = domain + $"admin/order/details?orderId={OrderVM.OrderHeader.Id}",
             };
 
@@ -97,6 +97,29 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return new StatusCodeResult(303);
 
         }
+
+
+        public IActionResult PaymentConfirmation(int orderHeaderid)
+        {
+            OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == orderHeaderid);
+
+            if (orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
+            {
+                //check the stripe status
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.SessionId);
+
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    _unitOfWork.OrderHeader.UpdateStatus(orderHeaderid, orderHeader.OrderStatus, SD.PaymentStatusApproved);
+                    _unitOfWork.Save();
+                }
+            }
+
+            return View(orderHeaderid);
+        }
+
+
 
         /// <summary>Updates the order details.</summary>
         /// <returns>
