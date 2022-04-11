@@ -50,6 +50,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 //continue
                 _unitOfWork.ShoppingCart.DecrementCount(cart, 1);
+
+                var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
+
+                HttpContext.Session.SetInt32(SD.SessionCart, count);
             }
             else
             {
@@ -67,6 +71,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
             _unitOfWork.ShoppingCart.Remove(cart);
             _unitOfWork.Save();
+
+            var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
+
+            HttpContext.Session.SetInt32(SD.SessionCart, count);
+
             return RedirectToAction(nameof(Index));
 
         }
