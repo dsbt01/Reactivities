@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BulkyBook.Utility\BulkyBook.Utility.csproj" />
     <ProjectReference Include="..\BulkyBooks.Models\BulkyBooks.Models.csproj" />
   </ItemGroup>
 
